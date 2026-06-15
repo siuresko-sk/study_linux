@@ -1,0 +1,17 @@
+1) alias fav='cd /home/love_folder; nautilus .'
+
+2) alias l='ls -Av --color=auto  --group-directories-first'
+alias ll='ls -lAvFth --color=auto  --group-directories-first'
+  
+3) alias cd='cd "$@; l"'
+
+4) alias cdf='cd "$(dirname "$(fzf)")"'
+
+5) 
+mkdir service1 service2 service3 
+touch .env
+ln .env service1/.env 
+ln .env service2/.env 
+ln .env service3/.env 
+  
+6) ls | grep \.py$ | grep "$@"  
