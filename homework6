@@ -4,6 +4,9 @@ head -n 5 "$@"
 echo -e "================\nTAIL:\n"
 tail -n 5 "$@"
 
+(эталон):
+echo -e "HEAD:\n$(head "$@")\n====================\nTAIL:\n$(tail "$@")"
+
 2)
 echo -e "==Середина файла==:\n"
 tail -n +6 "$@" | head -n -5 
@@ -11,5 +14,11 @@ tail -n +6 "$@" | head -n -5
 3)
 find . -type f | xargs wc -l | less
 
+(эталон):
+wc -l $(find .) | less
+
 4)
 diff $(find . -maxdepth 1 -iname "*$@*" | head -n 2)
+
+(эталон):
+diff $(ls *"$@"* | head -n 2)
