@@ -1,12 +1,18 @@
 1) alias trm='mv -iv -t ~/.local/share/Trash/files/'
 
+(эталон):
+alias trm='mv "$@" /trashfolder'  
+
 2)mybackup.sh 
 BACKUP_DIR="/home/user/backup/backup_$(date +%Y-%m-%d_%H-%M-%S)"
 mkdir -p "$BACKUP_DIR" 
 cp -rv -t  "$BACKUP_DIR" "$@"
 
+(эталон):
+cp -r projecta projectb /backupfolder 
+
 3) gendirs.sh 
-mkdir -p $(cat mydirs.txt)
+mkdir -p $(cat "$@")
 
 4) extract_by_ext.sh 
 mkdir -p "$@/javascript"
@@ -14,9 +20,19 @@ mkdir -p "$@/bash"
 mv "$@"/*.js "$@/javascript" 
 mv "$@"/*.sh "$@/bash"
 
+(эталон):
+mkdir javascript
+mv "$@".js javascript
+mkdir bash
+mv "$@".sh bash
+
 5) 7ln.sh 
-ln –s ??????? "$@"
+ln –rs ??????? "$@"
 
 6) setpy.sh 
 py_dir=$(which python"$@")
 sudo ln -sf "$py_dir" /usr/bin/python
+
+(эталон):
+PYLOC="$(which "$@")"
+ln -fs "$PYLOC" "$(dirname $PYLOC)"/python
