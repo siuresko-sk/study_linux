@@ -1,0 +1,15 @@
+1) 
+echo -e "HEAD:\n" 
+head -n 5 "$@" 
+echo -e "================\nTAIL:\n"
+tail -n 5 "$@"
+
+2)
+echo -e "==Середина файла==:\n"
+tail -n +6 "$@" | head -n -5 
+
+3)
+find . -type f | xargs wc -l | less
+
+4)
+diff $(find . -maxdepth 1 -iname "*$@*" | head -n 2)
