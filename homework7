@@ -1,0 +1,40 @@
+1.1) Подавляющая обертка suppress.sh 
+"$@" 2> /dev/null 
+
+1.2) Чистое познание Linux
+cd /usr/bin; bash ~/suppress.sh whatis $(ls) 
+
+2.1) Обертка логирующая outlog.sh
+"$@" 2>&1 | tee out.log 
+
+2.2) Обертка редиректа
+bash outlog.sh cat real.txt fake.txt 
+
+3) Обертка обрезки cuterr.sh
+"$@" 1> /dev/null 2> tmp.txt 
+tail -n 20 tmp.txt 
+rm tmp.txt
+
+"$@" 2>&1 1>/dev/null | tail -n 20 
+
+4) свежие файлы
+ls -t | tail -n +31 | xargs bash supress.sh rm 
+
+5) mytee.sh 
+read -d '' my_var 
+echo -n "$my_var" 
+echo -n "$my_var" > "$1" 
+
+6) амплитудный diff
+heil.sh:
+read -d '' my_var 
+echo -n "$my_var" | head -n 1 
+echo -n "$my_var" | tail -n 1 
+
+wc -m * | grep -v 'total' | sort -n | bash heil.sh | rev | cut -d ' ' -f 1 | rev | xargs diff 
+
+7) буфер копи-пастинга toclip.sh 
+"$@" | xclip -selection clipboard 
+
+8) pip - обновление
+pip list --outdated --disable-pip-version-check | tail -n +3 | tr -s ' ' | cut -d ' ' -f 1 | xargs pip install --upgrade  
