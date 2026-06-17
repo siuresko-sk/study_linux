@@ -4,6 +4,9 @@
 1.2) Чистое познание Linux
 cd /usr/bin; bash ~/suppress.sh whatis $(ls) 
 
+(эталон):
+bash suppress whatis $(ls -A /usr/bin)
+
 2.1) Обертка логирующая outlog.sh
 "$@" 2>&1 | tee out.log 
 
@@ -15,15 +18,18 @@ bash outlog.sh cat real.txt fake.txt
 tail -n 20 tmp.txt 
 rm tmp.txt
 
-"$@" 2>&1 1>/dev/null | tail -n 20 
+(эталон):
+"$@" 2> temp.txt
+tail -n20 < temp.txt
+rm temp.txt
 
 4) свежие файлы
-ls -t | tail -n +31 | xargs bash supress.sh rm 
+ls -t | tail -n +31 | xargs bash supress.sh rm --
 
 5) mytee.sh 
 read -d '' my_var 
 echo -n "$my_var" 
-echo -n "$my_var" > "$1" 
+echo -n "$my_var" > "$@" 
 
 6) амплитудный diff
 heil.sh:
@@ -31,7 +37,7 @@ read -d '' my_var
 echo -n "$my_var" | head -n 1 
 echo -n "$my_var" | tail -n 1 
 
-wc -m * | grep -v 'total' | sort -n | bash heil.sh | rev | cut -d ' ' -f 1 | rev | xargs diff 
+ls -p | grep -v / | xargs wc -m | grep -v 'total' | sort -n | bash heil.sh | rev | cut -d ' ' -f 1 | rev | xargs diff 
 
 7) буфер копи-пастинга toclip.sh 
 "$@" | xclip -selection clipboard 
