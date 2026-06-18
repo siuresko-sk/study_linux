@@ -1,0 +1,22 @@
+1) vars.sh
+env | cut -d= -f1 
+
+2) Env файл для тестов
+2.1)  .env
+USER=student1 
+RUNNER=python 
+2.2)
+source .env 
+export USER 
+export RUNNER 
+bash runtests.sh tests1/
+  
+3) showconflicts.sh 
+( printenv | cut -d '=' -f 1 | grep -Ev 'SHLVL|PWD|_' | tr '\n' ' ' ; echo; cat "$1" | cut -d '=' -f 1 | tr '\n' ' ') | python intersection.py 
+bash showconflicts.sh .env  - вызов
+
+4) wtf.sh
+ls --quoting-style=shell-escape | grep "^\'" | tr -d "'" 
+
+5) avgsize.sh 
+find . -maxdepth 1 -type f -printf "%s\n" | awk '{ sum += $1 } END { print sum/NR }' 
