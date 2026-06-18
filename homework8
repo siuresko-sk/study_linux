@@ -1,6 +1,9 @@
 1) vars.sh
 env | cut -d= -f1 
 
+(эталон): printenv | cut -d '=' -f 1 | xargs echo
+
+
 2) Env файл для тестов
 2.1)  .env
 USER=student1 
@@ -10,7 +13,15 @@ source .env
 export USER 
 export RUNNER 
 bash runtests.sh tests1/
-  
+
+(эталон):
+.env
+export RUNNER=python
+export USER=student1
+запуск:
+source .env
+bash runtests.sh tests1
+
 3) showconflicts.sh 
 ( printenv | cut -d '=' -f 1 | grep -Ev 'SHLVL|PWD|_' | tr '\n' ' ' ; echo; cat "$1" | cut -d '=' -f 1 | tr '\n' ' ') | python intersection.py 
 bash showconflicts.sh .env  - вызов
