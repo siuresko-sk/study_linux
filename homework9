@@ -1,0 +1,26 @@
+1) wordhint.sh
+grep -E -i "^$1$" /usr/share/dict/words 
+
+2) электронные почты 
+grep -E '[a-zA-Z0-9]{6,}@[a-z]{3,12}\.[a-z]{3,6}' emails.txt
+
+3) номера ТС РФ
+grep -E -o '[А-Я][0-9]{3}[А-Я]{2}\|[0-9]{2,3}' plates.txt 
+
+4) русификация доменов
+sed -E 's/(^https?:\/\/.*\.)[a-z]{2,6}(.*)/\1ru\2/' 
+
+5) очепятки
+sed -E -i '/^\s*#/!s/fiboncaci/fibonacci/g' fib.py fib_test.py 
+
+6) логирование конвейера teepipes.sh 
+eval $(echo "$1" | sed -E 's/\|/\| tee -a teepipes.log \|/g') 
+
+7) занятые порты busyports.sh
+find . -type f ! -path "*/.venv/*" ! -path "*/__pycache__/*" ! -name "*.csv" -print0 | xargs -0 grep -E '^[^#]*\s*[A-Z_]*PORT\s*=\s*[0-9]+\s*'
+
+8) последние изменения recentpys.sh 
+find . -type f -name "*.py" -mtime -30 -printf "%Ty-%Tm-%Td %TH:%TM:%TS \t %p \n" | sort -r 
+
+9) вынос здоровяков mvbigfiles.sh 
+find . -maxdepth 1 -type f -size +4M \( -name "*.bak*" -o -name "old_*" \) -print0 | xargs -0 mv -t archive/ 
