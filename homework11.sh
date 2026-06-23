@@ -198,9 +198,53 @@ function main {
 		
 	git_pull
 	decompress
-  do_restore
+  	do_restore
 	extra_restore $extra_root $extra_files
 }
 
 main "$@"
 
+4.1)
+BOLD=$(tput bold) 
+NORMAL=$(tput sgr0)
+
+do_feed() {
+	[[ -d .lit ]] || mkdir .lit
+	tar -czf .lit/${feed_name}.tgz * .* --exclude=.lit
+	echo Создан .lit/${feed_name}.tgz
+}
+
+do_need() {
+	[[ -e .lit/${need_name}.tgz ]] || (echo Не существует .lit/${need_name}.tgz ; exit 1)
+	tar -xzf .lit/${need_name}.tgz -C .
+	echo Восстановлен .lit/${need_name}.tgz
+}
+
+do_exhibit() {
+	ls -lt .lit | awk '{ sub(/\.tgz$/, "", $NF); print $6, $7, $8, " | " , "'"$BOLD"'", $NF, "'"$NORMAL"'"}'
+}
+
+main() {
+	case $1 in
+		e* )
+			need_exhibit=true;;
+		f* )
+			shift
+			feed_name=${1:?Не указано название изменения};;
+		n* )
+			shift
+			need_name=${1:?Не указано название изменения};;
+		*)
+			echo Не введены команды
+			exit 1;;
+	esac
+	if [[ $need_exhibit ]] ; then
+		do_exhibit
+	elif [[ $feed_name ]] ; then
+		do_feed
+	elif [[ $need_name ]] ; then
+		do_need
+	fi
+}
+
+main "$@"
