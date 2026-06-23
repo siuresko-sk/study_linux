@@ -207,24 +207,30 @@ main "$@"
 4.1)
 BOLD=$(tput bold) 
 NORMAL=$(tput sgr0)
+LITDIR=".lit"
 
 do_feed() {
-	[[ -d .lit ]] || mkdir .lit
-	tar -czf .lit/${feed_name}.tgz * .* --exclude=.lit
-	echo Создан .lit/${feed_name}.tgz
+	mkdir -p "$LITDIR"
+	ls -A | grep -vE "\\${LITDIR}" | xargs tar -czf $LITDIR/"${feed_name}.tgz"
+	echo Создан ${LITDIR}/${feed_name}.tgz
 }
 
 do_need() {
-	[[ -e .lit/${need_name}.tgz ]] || (echo Не существует .lit/${need_name}.tgz ; exit 1)
-	tar -xzf .lit/${need_name}.tgz -C .
-	echo Восстановлен .lit/${need_name}.tgz
+	[[ -e ${LITDIR}/${need_name}.tgz ]] || { echo "Не существует ${LITDIR}/${need_name}.tgz" ; exit 1; }
+	tar -xzf ${LITDIR}/${need_name}.tgz -C .
+	echo Восстановлен ${LITDIR}/${need_name}.tgz
 }
 
 do_exhibit() {
-	ls -lt .lit | awk '{ sub(/\.tgz$/, "", $NF); print $6, $7, $8, " | " , "'"$BOLD"'", $NF, "'"$NORMAL"'"}'
+	[[ -e $LITDIR ]] || { echo "Пусто" ; exit 0 ; }
+	ls -Alt $LITDIR \
+        | cut -d ' ' -f '6-9' \
+        | sed -E "s/(:[0-9]{2}) (.*)\.tgz$/\1 | ${BOLD}\2${NORMAL}/" \
+        | tail -n +2
 }
 
 main() {
+	[[ -z "$1" ]] && { echo "Не введены команды"; exit 1; }
 	case $1 in
 		e* )
 			need_exhibit=true;;
