@@ -254,3 +254,62 @@ main() {
 }
 
 main "$@"
+
+4.2) 
+BOLD=$(tput bold) 
+NORMAL=$(tput sgr0)
+LITDIR=".lit"
+LITIGNORE=".litignore"
+
+do_feed() {
+	mkdir -p "$LITDIR"
+	if [[ -e $LITIGNORE ]] ; then
+		list_ignore=$(cat $LITIGNORE)
+	else 
+		list_ignore=""
+	fi
+	list_ignore="$list_ignore
+$LITDIR"
+	ls -A | grep -Ev -f <(echo "$list_ignore") | xargs tar -czf $LITDIR/"${feed_name}.tgz"
+	echo Создан ${LITDIR}/${feed_name}.tgz
+}
+
+do_need() {
+	[[ -e ${LITDIR}/${need_name}.tgz ]] || { echo "Не существует ${LITDIR}/${need_name}.tgz" ; exit 1; }
+	tar -xzf ${LITDIR}/${need_name}.tgz -C .
+	echo Восстановлен ${LITDIR}/${need_name}.tgz
+}
+
+do_exhibit() {
+	[[ -e $LITDIR ]] || { echo "Пусто" ; exit 0 ; }
+	ls -Alt $LITDIR \
+        | cut -d ' ' -f '6-9' \
+        | sed -E "s/(:[0-9]{2}) (.*)\.tgz$/\1 | ${BOLD}\2${NORMAL}/" \
+        | tail -n +2
+}
+
+main() {
+	[[ -z "$1" ]] && { echo "Не введены команды"; exit 1; }
+	case $1 in
+		e* )
+			need_exhibit=true;;
+		f* )
+			shift
+			feed_name=${1:?Не указано название изменения};;
+		n* )
+			shift
+			need_name=${1:?Не указано название изменения};;
+		*)
+			echo Не введены команды
+			exit 1;;
+	esac
+	if [[ $need_exhibit ]] ; then
+		do_exhibit
+	elif [[ $feed_name ]] ; then
+		do_feed
+	elif [[ $need_name ]] ; then
+		do_need
+	fi
+}
+
+main "$@"
