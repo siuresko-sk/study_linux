@@ -64,3 +64,10 @@ if [[ "$1" == "-e" || "$1" == "--export" ]] ; then
 else 
   find . -type f \( -name "*.sh" -or -name "*.bash" \) -exec chmod u+x {} +
 fi
+
+5)
+ORIGINAL_PATH="$PATH"
+cd() {
+  builtin cd "$@"
+  PATH="$ORIGINAL_PATH:${PWD}"
+}
