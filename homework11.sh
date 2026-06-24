@@ -313,3 +313,39 @@ main() {
 }
 
 main "$@"
+
+5) mytree
+mytree() {
+	local dir="$1"
+	local item
+	local prefix="$2"
+	local total
+	local count=0
+	
+    # Если путь не указан, начинаем с текущей папки "."
+    [[ -z "$dir" ]] && dir="."
+
+    # Проверяем, существует ли папка и есть ли к ней доступ
+    [[ -d "$dir" ]] || return 1
+
+    # Считаем общее количество элементов в этой папке
+    total=$(ls -1 "$dir" | wc -l)
+	while read -r item ; do 
+		count=$((count + 1))
+		if [[ $count -eq $total ]] ; then # Это последний файл в папке. Перед ним надо нарисовать уголок: └── 
+			echo "$prefix└── $item"
+			if [[ -d "$dir/$item" ]]; then
+                mytree "$dir/$item" "$prefix    "
+            fi
+		else # Это НЕ последний файл в папке. # Перед ним надо нарисовать ветку: ├── 
+			echo "$prefix├── $item"
+			if [[ -d "$dir/$item" ]]; then
+	            mytree "$dir/$item" "$prefix│   "
+	        fi
+		fi
+	done < <(ls -1 "$dir")
+}
+
+mytree "$1"
+
+
