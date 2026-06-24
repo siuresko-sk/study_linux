@@ -264,7 +264,7 @@ LITIGNORE=".litignore"
 do_feed() {
 	mkdir -p "$LITDIR"
 	if [[ -e $LITIGNORE ]] ; then
-		list_ignore=$(cat $LITIGNORE)
+		list_ignore=$(grep -E -v "(^#|^\s*)" "$LITIGNORE")
 	else 
 		list_ignore=""
 	fi
