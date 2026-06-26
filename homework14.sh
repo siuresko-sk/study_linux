@@ -9,3 +9,21 @@ while true ; do
 done
 
 chmod u+x dfalarm.sh
+
+2) wgetalarm.sh
+#!/usr/bin/env bash
+if wget -qO - https://true-time.com/moscow/ | grep -Eq "00" ; then
+  echo "Alarm!"
+fi
+
+chmod u+x wgetalarm.sh
+bash spamer --instances 5 --delay 1 ./wgetalarm.sh
+
+3) somecurls.sh
+#!/usr/bin/env bash
+curl -s "https://jsonplaceholder.typicode.com/posts/99" 
+for (( i=1; i<4; i++ )) ; do
+  curl -X POST "https://jsonplaceholder.typicode.com/posts/" \
+    -H "Content-Type: application/json" \
+    -d "{\"title\": \"post $i\", \"body\": \"content\", \"userId\": 1}"
+done 
